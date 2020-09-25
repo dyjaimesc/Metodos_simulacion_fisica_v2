@@ -1,0 +1,10 @@
+*a.out
+*.x
+*~
+*#
+*.txt
+*#*
+*.pdf
+*.Rhistory
+*.dat
+*.sh~
