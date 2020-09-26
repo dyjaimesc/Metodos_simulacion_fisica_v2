@@ -1,6 +1,6 @@
 #!/bin/bash
 pwd
-name="2_Planeta_Vector"
+name="3_Planeta_Vector_PEFRL"
 VAR=0.05
 
 g++ -std=c++17  $name.cpp -o $name.x

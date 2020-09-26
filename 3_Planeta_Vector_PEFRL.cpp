@@ -1,6 +1,6 @@
 /*Algoritmo que realiza la simulacion  de un planeta girando alrededor de otro utilzando una fuerza central
 
-2_Planeta_Vector.cpp
+3_Planeta_Vector_PEFRL.cpp
 */
 
 #include<iostream>
@@ -12,6 +12,13 @@
 const double G=1.0;
 const double M1=1.0;
 
+//--------------- constantes PEFRL-------------
+
+const double Zeta=0.1786178958448091e00;
+const double Lamnda=-0.2123418310626054e00;
+const double Chi=-0.662645826698189e-01;
+const double Coeficiente1=(1-2*Lamnda)/2;
+const double Coeficiente2=1-2*(Chi*Lamnda);
 
 //--------------- Clases  -------------
 
@@ -22,7 +29,8 @@ private:
 public:
     void Inicie(double x0,double y0,double Vx0,double Vy0,double m0,double R0);
     void CalculeFuerza(void);
-    void Muevase(double dt);
+    void Mueva_r(double dt,double Coeficiente);
+    void Mueva_V(double dt,double Coeficiente);
     void Dibujese(void);
     double Getx(void){return r.x();};
     double Gety(void){return r.y();};
@@ -40,9 +48,11 @@ void Planeta::CalculeFuerza(void){
     F=-aux*r;
 }
 
-void Planeta::Muevase(double dt){
-    r+=V*dt;
-    V+=F*(dt/M2);
+void Planeta::Mueva_r(double dt, double Coeficiente){
+    r+=V*(dt*Coeficiente);
+}
+void Planeta::Mueva_V(double dt, double Coeficiente){
+    V+=F*(dt*Coeficiente/M2);
 }
 
 void Planeta::Dibujese(void){//dibuja el balon
@@ -52,8 +62,8 @@ void Planeta::Dibujese(void){//dibuja el balon
 //--------------- Animacion  -------------
 
 void InicieAnimacion(void){
-  //cout<<"set terminal gif animate"<<endl;
-  //cout<<"set output 'Planeta.gif'"<<endl;
+  cout<<"set terminal gif animate"<<endl;
+  cout<<"set output 'Planeta.gif'"<<endl;
   cout<<"unset key"<<endl;
   cout<<"set xrange[-20:20]"<<endl;
   cout<<"set yrange[-20:20]"<<endl;
@@ -76,7 +86,8 @@ void TermineCuadro(void){
 
 int main(void){
     Planeta P1;
-    double t,tf,r0,Vx0,Vy0,m0,R0,dt;
+    double r0,Vx0,Vy0,m0,R0;
+    double t,tdibujo,tmax,tcuadro,dt=0.1;
     double Omega,T;
 
 //--------------- Condiciones iniciales  -------------
@@ -86,16 +97,36 @@ int main(void){
     Vx0=0.0;  Vy0=Omega*r0;
     
     m0=10.0; R0=1.0;
-    
-    t=0.0; tf=T*19.0;
-    dt=0.01;
+
+    tmax=19.0*T; tcuadro=T/40; dt=0.1;
+    t=0.0; //tmax=T*19.0;
 
     P1.Inicie(   r0,   0.0,   Vx0,  1.0*Vy0, m0, R0);
+    
+    InicieAnimacion();
+    
+    for(t=0,tdibujo=0;t<tmax;t+=dt,tdibujo+=dt){
+	//dibujar
 
-     for(;t<tf;t+=dt){
-	 P1.CalculeFuerza();
-	 P1.Muevase(dt);
-	 cout<<t<<" "<<P1.Getx()<<" "<<P1.Gety()<<endl;
+	if(tdibujo>tcuadro){
+	    /*  InicieCuadro();
+	    P1.Dibujese();
+	    TermineCuadro();
+
+	    tdibujo=0;// */
+	       cout<<t<<" "<<P1.Getx()<<" "<<P1.Gety()<<endl;
+	}
+	 P1.Mueva_r(dt,Zeta);
+	 P1.CalculeFuerza(); P1.Mueva_V(dt,Coeficiente1);
+	 P1.Mueva_r(dt,Chi);
+	 P1.CalculeFuerza(); P1.Mueva_V(dt,Lamnda);
+	 P1.Mueva_r(dt,Coeficiente2);
+	 P1.CalculeFuerza(); P1.Mueva_V(dt,Lamnda);
+	 P1.Mueva_r(dt,Chi);
+	 P1.CalculeFuerza(); P1.Mueva_V(dt,Coeficiente1);
+	 P1.Mueva_r(dt,Zeta);
+
+	 
      } 
 
     return 0;
