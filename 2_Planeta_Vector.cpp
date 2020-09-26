@@ -12,6 +12,7 @@
 const double G=1.0;
 const double M1=1.0;
 
+
 //--------------- Clases  -------------
 
 class Planeta{
@@ -22,6 +23,7 @@ public:
     void Inicie(double x0,double y0,double Vx0,double Vy0,double m0,double R0);
     void CalculeFuerza(void);
     void Muevase(double dt);
+    void Dibujese(void);
     double Getx(void){return r.x();};
     double Gety(void){return r.y();};
 };
@@ -43,6 +45,32 @@ void Planeta::Muevase(double dt){
     V+=F*(dt/M2);
 }
 
+void Planeta::Dibujese(void){//dibuja el balon
+  cout<<" , "<<r.x()<<"+"<<R<<"*cos(t),"<<r.y()<<"+"<<R<<"*sin(t)";
+}
+
+//--------------- Animacion  -------------
+
+void InicieAnimacion(void){
+  //cout<<"set terminal gif animate"<<endl;
+  //cout<<"set output 'Planeta.gif'"<<endl;
+  cout<<"unset key"<<endl;
+  cout<<"set xrange[-20:20]"<<endl;
+  cout<<"set yrange[-20:20]"<<endl;
+  cout<<"set size ratio -1"<<endl;
+  cout<<"set parametric"<<endl;
+  cout<<"set trange [0:7]"<<endl;
+  cout<<"set isosamples 12"<<endl;
+  cout<<"set grid"<<endl;
+}
+void InicieCuadro(void){
+  cout<<"plot 0,0";
+}
+void TermineCuadro(void){
+  cout<<endl;
+}
+
+
 //--------------- Cuerpo (main)  -------------
 
 
@@ -51,7 +79,7 @@ int main(void){
     double t,tf,r0,Vx0,Vy0,m0,R0,dt;
     double Omega,T;
 
-//--------------- Condiciones inicieale  -------------
+//--------------- Condiciones iniciales  -------------
     r0=10.0;
     Omega=pow(G*M1/(r0*r0*r0),0.5);
     T=2*M_PI/Omega;
